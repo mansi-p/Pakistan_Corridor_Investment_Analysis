@@ -19,9 +19,9 @@ To focus on agricultural data, the following variables from each dataset were ge
 |-------------- | ----------- |
 |District_of_State | Name of the district (also includes subdivisions, tehsils)|
 |Total_Population| Population of the district (not available in all datasets) |
-|Total_workers_Male| Total male working force in the district (not avaiable in all datasets) |
-|Total_workers_Female| Total female working force in the district (not avaiable in all datasets)  |
-| Dependants | Total number of dependants in the district (not avaiable in all datasets) |
+|Total_workers_Male| Total male working force in the district (not available in all datasets) |
+|Total_workers_Female| Total female working force in the district (not available in all datasets)  |
+| Dependants | Total number of dependants in the district (not available in all datasets) |
 |Workers_dependants_agripasture| Total number of workers and dependants in each district working in 'Total order 1' occupation of agriculture and pasture (abbv. agripasture)|
 |Total_workers_Male_agripasture | Total male working force in agripasture in the district|
 |Total_workers_Female_agripasture | Total female working force in agripasture in the district |
