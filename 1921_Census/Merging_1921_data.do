@@ -9,7 +9,7 @@
        
 	   ** WRITEN BY:    Mansi Panchamia
       
-	  ** Last date modified:  June 3, 2020
+	  ** Last date modified:  June 5, 2020
       
 	  
 * ******************************************************************** *
@@ -411,19 +411,20 @@ save "temp1921-t17(v23)_clean.dta"
 
 *Datasets in the form of [Occupation, disaggregated data of each district] is yet to reshaped 
 *Once done, all the clean datasets will be merged 
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* Merging all '_clean' datasets */
+use "1921-t17 central provinces and berar_ clean.dta", clear
+append using "1921-t17bihar and orissa_clean.dta"
+append using "1921-t17bombay_clean.dta"
+append using "1921-t17hyderabad_clean.dta"
+append using "1921-t17jandk_clean.dta"
+append using "1921-t17rajputna_clean.dta"
+append using "temp1921-t17(v3)-out_clean.dta"
+append using "temp1921-t17(v5)-out_clean.dta"
+append using "temp1921-t17(v15)-out_clean.dta"
+append using "temp1921-t17(v16)-out_clean.dta"
+append using "temp1921-t17(v23)_clean.dta"
+append using "1921-t17baluhistan_clean.dta"
+save "Census_1921_agriculture_clean.dta"
 
 
 
