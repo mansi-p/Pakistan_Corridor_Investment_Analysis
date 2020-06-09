@@ -7,11 +7,8 @@ There are three subfolders within the 1921 Census track -
 2. 1921 t8 (religion) - Contains literacy rate and religious beliefs of population in each state (variables - district name, religious beliefs and age, Literate population_male, Literate population_female and population, literate in English)
 3. 1921 t17 (means of living) - Contains occupation of population in each state (variables - district name, total population - males, females, dependants, classes and subclasses of different occupation)
 
-To merge data on agricultural workers, 21 files in 1921 t17 (means of living) folder are used.
-Observations:
-1. Out of these 21 datasets, 12 are in the format of [District, disaggregated data (male, female, dependants) of different types of occupation as variables] and 9 are in the format of [Occupations, disaggreagated data of district populations for each of these occupations]
-2. Overall, data availability is consistent across the datasets with a high degree of granularity with disaggreated data (male, female and dependants) available for all classes and subclasses of occupation
-3. Dataset 'temp1921-t17(v12)' has no district or state specified
+To merge data on agricultural workers, 21 files in 1921 t17 (means of living) folder are used. Out of these 21 datasets, 12 are in the format of [District, disaggregated data (male, female, dependants) of different types of occupation as variables] and 9 are in the format of [Occupations, disaggreagated data of district populations for each of these occupations]. Overall, data availability is consistent across the datasets with a high degree of granularity with disaggreated data (male, female and dependants) available for all classes and subclasses of occupation
+
 
 The goal is to combine these 21 datasets into one 1921 dataset which will then be merged with datsets from 1931 and 1951 to form a panel dataset.
 To focus on agricultural data, the following variables from each dataset were generated:
@@ -36,6 +33,7 @@ P.S.
 2. Dataset 'temp1921-t17(v13)-out' has occupation 'Total order 1a' (different from nomenclature used in other datasets such as 'Total order 1' and 'Total suborder a'). No explaination has been offered regarding its meaning. The dataset does not have cultivation as occupation, as well. 
 3. Dataset 'temp1921-t17(v16)-out' has 'Ordinary cultivation' listed as an occupation twice, with different population values in variable columns under the names '2. Ordinary cultivation' and 'Total order 1(a) Ordinary cultivation'. For now, Data under 'Total order 1(a)'' has been classified as per cultivation data from other datasets whereas '2. Ordinary cultivation' has been retained under the same title with suffix '_2'
 4. Dataset 'temp1921-t17(v18)' has no district or state listed - just 'Central India' as the abstract region
+5. Dataset 'temp1921-t17(v12)' has no district or state specified
 
 The .do file associated with this README first reads all the excel files in the selected folder and converts them into .dta format. Since each of these datasets have a unique combination of structure, position of the selected variables (column numbers are different), and difference in naming formats, each of these files are individually cleaned and stored as a new .dta file with the same name as before, with the suffix '_clean'. Then, the individual cleaned files are appended at the lowest common denominator of state, to generate a 1921 dataset of agricultural workers. 
 
