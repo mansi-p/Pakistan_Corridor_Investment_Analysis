@@ -325,6 +325,95 @@ drop if District_of_State == "2" || District_of_State == "6" || District_of_Stat
 drop if District_of_State == ""
 save "1951_dataset_clean.dta"
 
+* ---------------------------------------------------------------------------- *
+/* DISTRICT IDENTIFIER */
+* ---------------------------------------------------------------------------- *
+egen District_Identifier = incss(District_of_State), sub(district) insensitive /* insensitive = case insensitivity */
+
+* ---------------------------------------------------------------------------- *
+/* TEHSIL IDENTIFIER */
+* ---------------------------------------------------------------------------- *
+egen Tehsil_Identifier = incss(District_of_State), sub(tehsil) insensitive
+replace Tehsil_Identifier = 1 if strmatch(District_of_State, "* Taluka") /* Tehsils are also called Talukas */
+
+* ---------------------------------------------------------------------------- *
+/* SUB-DIVISION IDENTIFIER */
+* ---------------------------------------------------------------------------- *
+egen Subdivision_Indentifier = incss(District_of_State), sub(Sub-Division) insensitive
+rename Subdivision_Indentifier Subdivision_Identifier /* spelling error */
+replace Subdivision_Identifier = 1 if strmatch(District_of_State, "* Subdivision")
+
+* ---------------------------------------------------------------------------- *
+/* DIVISION IDENTIFIER */
+* ---------------------------------------------------------------------------- *
+/*egen Division_Identifier = incss(District_of_State), sub(division) insensitive
+drop Division_Identifier */ /* Going this route makes values containing 'sub-division' 1 as well */
+gen Division_Identifier = strmatch(District_of_State, "* DIVISION")
+replace Division_Identifier = 1 if strmatch(District_of_State, "* division")
+replace Division_Identifier = 1 if strmatch(District_of_State, "* Division")
+replace Division_Identifier = 1 if strmatch(District_of_State, "* Division ")
+
+* ---------------------------------------------------------------------------- *
+/* 1951 STATES IDENTIFIER */
+* ---------------------------------------------------------------------------- *
+egen State_Identifier = incss(District_of_State), sub(STATE) insensitive
+
+* ---------------------------------------------------------------------------- *
+/* PROVINCE IDENTIFIER */
+* ---------------------------------------------------------------------------- *
+egen Province_Identifier = incss(District_of_State), sub(PROVINCE) insensitive
+
+* ---------------------------------------------------------------------------- *
+/* Manually identifying values in 'District_of_State which do not have any of the above identifiers */
+* ---------------------------------------------------------------------------- *
+
+/* Sibi is also a division, but the division was not established until 1974 - Quddus, Syed Abdul (1990). The Tribal Baluchistan. Ferozsons. p. 49. ISBN 978-969-0-10047-4. */
+/* District names - U.S. Department of Commerce and Bureau, “Foreign Statistical Publications: Accession List, Volume 3,” U.S. Department of Commerce, Bureau of the Census. p. 12 */
+/* District names - Pakistan Minsitry of Interior, "Census of Pakistan, 1951". Office of Census Commissioner, Government of Pakistan */
+replace District_Identifier = 1 if District_of_State == "Chagai" || District_of_State == "Loralai" || District_of_State == "Quetta-Pishin" || District_of_State == "Sibi"
+replace District_Identifier = 1 if District_of_State == "Zhob" || District_of_State == "Dadu" || District_of_State == "Larkana" || District_of_State == "Bannu"
+replace District_Identifier = 1 if District_of_State == "Dera Ismail Khan" || District_of_State == "Hazara" || District_of_State == "Kohat" || District_of_State == "Mardan"
+replace District_Identifier = 1 if District_of_State == "Peshawar" || District_of_State == "Chittagong Hill Tracts" || District_of_State == "Noakhali" || District_of_State == "Slyhet"
+replace District_Identifier = 1 if District_of_State == "Tippera" || District_of_State == "Bakerganj" || District_of_State == "Dacca" || District_of_State == "Faridpur"
+replace District_Identifier = 1 if District_of_State == "Mymensingh" || District_of_State == "Bogra" || District_of_State == "Dinajpur" || District_of_State == "Jessore"
+replace District_Identifier = 1 if District_of_State == "Khulna" || District_of_State == "Kushtia" || District_of_State == "Pabna" || District_of_State == "Rajshahi"
+replace District_Identifier = 1 if District_of_State == "Rangpur" || District_of_State == "Gujranwala" || District_of_State == "Lahore" || District_of_State == "Sheikhupura"
+replace District_Identifier = 1 if District_of_State == "Sialkot" || District_of_State == "Dera Ghazi Khan" || District_of_State == "Jhang" || District_of_State == "Lyallpur"
+replace District_Identifier = 1 if District_of_State == "Montgomery" || District_of_State == "Multan" || District_of_State == "Muzaffargarh" || District_of_State == "Campbellpur"
+replace District_Identifier = 1 if District_of_State == "Gujrat" || District_of_State == "Jhelum" || District_of_State == "Mianwali" || District_of_State == "Rawalpindi"
+replace District_Identifier = 1 if District_of_State == "Shahpur" || District_of_State == "Bahawalpur" || District_of_State == "Rahimyarkhan" || District_of_State == "Larkana"
+replace District_Identifier = 1 if District_of_State == "Nawabshah" || District_of_State == "Sukkur" || District_of_State == "Thar Parkar" || District_of_State == "Thatta"
+replace District_Identifier = 1 if District_of_State == "Upper Sind Frontier" || District_of_State == "Bahawalpur" || District_of_State == "Kalat" 
+replace District_Identifier = 1 if District_of_State == "Kharan" || District_of_State == "Las Bela" || District_of_State == "Mekran" 
+replace District_Identifier = 1 if District_of_State == "Chittagong" || District_of_State == "Noakhali" || District_of_State == "Sylhet" 
+replace District_Identifier = 1 if District_of_State == "Tippera" || District_of_State == "Mymensing" || District_of_State == "Mekran" 
+replace District_Identifier = 1 if District_of_State == "Montgomer"
+
+replace Tehsil_Identifier = 1 if District_of_State == "Tando Bago" || District_of_State == "Keti Bunder Mahal" || District_of_State == "Administered area" 
+replace Tehsil_Identifier = 1 if District_of_State == "Mari-Bugti Country" || District_of_State == "Jhalawan" || District_of_State == "Kachhi" 
+replace Tehsil_Identifier = 1 if District_of_State == "Kalat Niabat" || District_of_State == "Sarawan" || District_of_State == "Bahawalnagar"
+
+
+/*After 1947 partition of the Indian subcontinent, East Bengal became a province of Pakistan */
+replace  Province_Identifier = 1 if District_of_State == "East Bengal" || District_of_State == "BALUCHISTAN INCLUDING STATES UNION" || District_of_State == "Sind" || District_of_State == "PUNJAB INCLUDING BAHAWALPUR STATE"
+replace  Province_Identifier = 1 if District_of_State == "Punjab Including Bahawalpur State" || District_of_State == "Punjab" || District_of_State == "Baluchistan including States Union" || District_of_State == "PUNJAB"
+replace State_Identifier = 0 if District_of_State == "Punjab Including Bahawalpur State" /* It is a province, not a state; made so by earlier egen command of state identifier */
+replace State_Identifier = 0 if District_of_State = "PUNJAB INCLUDING BAHAWALPUR STATE"
+
+
+/*In 1951, Hyderdabad is the name of both, a district and division, unsure which one is referred to here */
+/* It is unclear which identifier Biloch Trans Frontier Tract belongs to, in 1951 */ 
+/* It is unclear which identifier 'Quetta city including Cantt.' belongs to in 1951 */
+
+/* Dropping duplicates rows */
+duplicates list
+duplicates drop 
+/* There are more duplicates in District_of_State however population values are different */
+
+
+save "1951_dataset_clean.dta", replace
+
+
 
 
 
