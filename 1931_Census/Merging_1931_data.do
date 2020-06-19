@@ -26,6 +26,12 @@ version 13.0
 
 	Install renvarlab (changing variable names to match label names)
 	ssc install renvarlab
+	
+	Install egenmore
+	ssc install egenmore
+	
+	Install ereplace
+	ssc install ereplace
 
 */
 
@@ -975,6 +981,141 @@ drop Nonworking_dependants_F_total
 drop Working_dependants_M_total
 drop Working_dependants_F_total
 drop Total_population_total
+
+/* removing numbers, brackets, periods in District_of_State values. This makes it easier to match names across years. For instance '(1). Parganas' becomes 'Parganas' */
+ereplace District_of_State = sieve(District_of_State), omit(0123456789)
+ereplace District_of_State = sieve(District_of_State), omit((.)-)
+replace District_of_State = ltrim(District_of_State)
+
+/* Correct obvious spelling errors */
+replace District_of_State = "Bundelkhand Agency" if District_of_State == "Bundelkhand Agecny"
+replace District_of_State = "Rest of Agency" if District_of_State == "Rest of Agnecy"
+replace District_of_State = "Baghelkhand Agency" if District_of_State == "Baghelkhand Agenvy"
+replace District_of_State = "Meerut Division" if District_of_State == "Meerut Divisoin"
+
+/* DISTRICT IDENTIFIER */
+egen District_Identifier = incss(District_of_State), sub(district) insensitive /* insensitive = case insensitivity */
+replace District_Identifier = 1 if strmatch(District_of_State, "*_d")
+
+/* DIVISION IDENTIFIER */
+egen Division_Identifier = incss(District_of_State), sub(division) insensitive
+replace Division_Identifier = 1 if strmatch(District_of_State, "*_dist")
+
+/* 1931  PRINCELY STATES IDENTIFIER */
+egen State_Identifier = incss(District_of_State), sub(STATE) insensitive
+replace State_Identifier = 1 if strmatch(District_of_State, "*_st")
+
+/* PROVINCE IDENTIFIER */
+egen Province_Identifier = incss(District_of_State), sub(PROVINCE) insensitive
+
+/* TEHSIL IDENTIFIER */
+egen Tehsil_Identifier = incss(District_of_State), sub(tehsil) insensitive
+
+/* AGENCY IDENTIFIER (collection of princely states within one division) */
+egen Agency_Identifier = incss(District_of_State), sub(agency) insensitive
+
+/* CITY IDENTIFIER */
+egen City_Identifier = incss(District_of_State), sub(city) insensitive 
+replace City_Identifier = 1 if strmatch(District_of_State, "*_ct")
+
+/* Manually identifying values in 'District_of_State which do not have any of the above identifiers */
+
+/* British Territory not identified as any of the above */
+/* Culcuta suburbs has not been identified */
+/* Calcutta has not been identified yet -- Jun 18, 2020 */
+/* Thana has not been identified */
+/* Karachi has not been identified as a city yet */
+/* Unknown - WadiJhagir */
+/* Unknown - Sachin */
+/* Unknown - Dangs (could be a misspelling of Dang {district in Gujarat)*/
+/* Unknown - Drug */
+/* Unknown - Korea */
+/*Unknown - Jora */
+/* Unknown - Jhaua */
+
+/*removing roman numerals from a few District_of_State values*/
+replace District_of_State = "Idar" if District_of_State == "I Idar"
+replace District_of_State = "Rajpipla" if District_of_State == "I Rajpipla"
+replace District_of_State = "ChotaUdepur" if District_of_State == "ii ChotaUdepur"
+replace District_of_State = "DevgadBaria" if District_of_State == "iii DevgadBaria"
+replace District_of_State = "Lunawada" if District_of_State == "iv Lunawada"
+replace District_of_State = "Balasinor" if District_of_State == "v Balasinor"
+replace District_of_State = "Santh" if District_of_State == "vi Santh"
+replace District_of_State = "SankhedMewas" if District_of_State == "vii SankhedMewas"
+replace District_of_State = "Jobat" if District_of_State == "a Jobat"
+replace District_of_State = "Kothi" if District_of_State == "a Kothi"
+replace District_of_State = "Sohawal" if District_of_State == "b sohawal"
+
+
+
+
+replace State_Identifier = 1 if District_of_State == "ASSAM" || District_of_State == "Cooch Behar" || District_of_State == "Tripura" || District_of_State == "Sikkim"
+replace State_Identifier = 1 if District_of_State == "Hyderabad" || District_of_State == "Cambay" || District_of_State == "Idar"
+replace State_Identifier = 1 if District_of_State == "Rajpipla" || District_of_State == "ChotaUdepur" || District_of_State == "DevgadBaria"
+replace State_Identifier = 1 if District_of_State == "Lunawada" || District_of_State == "Balasinor" || District_of_State == "Santh"
+replace State_Identifier = 1 if District_of_State == "SankhedMewas" || District_of_State == "Jawhar" || District_of_State == "Janjira"
+replace State_Identifier = 1 if District_of_State == "Bhor" || District_of_State == "Aundh" || District_of_State == "Phaltan"
+replace State_Identifier = 1 if District_of_State == "Akalkot" || District_of_State == "Sawantwadi" || District_of_State == "Kolhapur"
+replace State_Identifier = 1 if District_of_State == "Kurundwad Senior" || District_of_State == "Kurundwad Junior" || District_of_State == "Miraj Siraj" /* Miraj Senior misspelled as Miraj Siraj */
+replace State_Identifier = 1 if District_of_State == "Miraj Junior" || District_of_State == "Jamkhandi" || District_of_State == "Mudhol"
+replace State_Identifier = 1 if District_of_State == "Bamdurg" || District_of_State == "Sangli" || District_of_State == "Jath"
+replace State_Identifier = 1 if District_of_State == "Dharampur" || District_of_State == "Jawhar" || District_of_State == "Bansda"
+replace State_Identifier = 1 if District_of_State == "Khairpur" || District_of_State == "Savanur" || District_of_State == "Jath"
+replace State_Identifier = 1 if District_of_State == "Dharampur" || District_of_State == "Jawhar" || District_of_State == "Bansda"
+replace State_Identifier = 1 if District_of_State == "Makrai" || District_of_State == "Bastar" || District_of_State == "Kanker"
+replace State_Identifier = 1 if District_of_State == "Nandgaon" || District_of_State == "Kahairagarh" || District_of_State == "Chhuikhadan"
+replace State_Identifier = 1 if District_of_State == "Kawardha" || District_of_State == "Sakti" || District_of_State == "Raigarh"
+replace State_Identifier = 1 if District_of_State == "Sarangarh" || District_of_State == "Changbhaker" || District_of_State == "Surgoia"
+replace State_Identifier = 1 if District_of_State == "Udaipur" || District_of_State == "Jashpur" || District_of_State == "British Paragana of Manpur"
+replace State_Identifier = 1 if District_of_State == "Indore" || District_of_State == "Bhopal" || District_of_State == "Khilchipur"
+replace State_Identifier = 1 if District_of_State == "Narisnghgarh" || District_of_State == "Rajgarh" || District_of_State == "Kurwai"
+replace State_Identifier = 1 if District_of_State == "Dewas Senior" || District_of_State == "Dewas Junior" || District_of_State == "Ratlam"
+replace State_Identifier = 1 if District_of_State == "Sailana" || District_of_State == "Sitamau" || District_of_State == "Ali Rajpur"
+replace State_Identifier = 1 if District_of_State == "Barwani" || District_of_State == "Dhar" || District_of_State == "Jobat"
+replace State_Identifier = 1 if District_of_State == "Ajaigarh" || District_of_State == "Baoni" || District_of_State == "Bijawar"
+replace State_Identifier = 1 if District_of_State == "Charkhari" || District_of_State == "Chhatarpur" || District_of_State == "Datia"
+replace State_Identifier = 1 if District_of_State == "Orchha" || District_of_State == "Panna" || District_of_State == "Samthar"
+replace State_Identifier = 1 if District_of_State == "Baraundha" || District_of_State == "Maihar" || District_of_State == "Nagod"
+replace State_Identifier = 1 if District_of_State == "Rewa" || District_of_State == "Kothi" || District_of_State == "Sohawal"
+
+
+
+replace State_Identifier = 0 if District_of_State == "Bombay Presidency including Bombay States and Agencies" 
+replace Province_Identifier = 1 if District_of_State == "Bombay Presidency including Bombay States and Agencies" /*It was identified as a State due to the presence of State in 
+its name, however Bombay Presidency was a province in 1931 */
+
+/*After 1947 partition of the Indian subcontinent, East Bengal became a province of Pakistan */
+replace  Province_Identifier = 1 if District_of_State == "Bengal" || District_of_State == "Sind" || District_of_State == "Central Provinces and Berar"
+
+replace District_Identifier = 1 if District_of_State == "Chachar" || District_of_State == "Sylhet" || District_of_State == "Khasi and Jaintia Hills (British)" || District_of_State == "Naga Hills"
+replace District_Identifier = 1 if District_of_State == "Lushai Hills" || District_of_State == "Goalpara" || District_of_State == "Kamrup" || District_of_State == "Darrang"
+replace District_Identifier = 1 if District_of_State == "Nowgong" || District_of_State == "Sibsagar" || District_of_State == "Lakhimpur" || District_of_State == "Garo Hills"
+replace District_Identifier = 1 if District_of_State == "SADIYA HILL TRACTS" || District_of_State == "BALIPARA HILL TRACTS" || District_of_State == "Burdwan" || District_of_State == "Birbhum"
+replace District_Identifier = 1 if District_of_State == "Bankura" || District_of_State == "Midnapore" || District_of_State == "Hoogly" || District_of_State == "Hawrah"
+replace District_Identifier = 1 if District_of_State == "Parganas" || District_of_State == "Nadia" || District_of_State == "Murshidabad" || District_of_State == "Jessore"
+replace District_Identifier = 1 if District_of_State == "Khulna" || District_of_State == "Rajshahi" || District_of_State == "Dinajpur" || District_of_State == "Jalpaiguri"
+replace District_Identifier = 1 if District_of_State == "Darjeeling" || District_of_State == "Ranjpur" || District_of_State == "Bogra" || District_of_State == "Pabna"
+replace District_Identifier = 1 if District_of_State == "Malda" || District_of_State == "Dacca" || District_of_State == "Mymensingh" || District_of_State == "Faridpur"
+replace District_Identifier = 1 if District_of_State == "Tippera" || District_of_State == "Noakhali" || District_of_State == "Chittagong" || District_of_State == "Chittagong Hill Tracts"
+replace District_Identifier = 1 if District_of_State == "Ahmedabad" || District_of_State == "Broach" || District_of_State == "Kaira" || District_of_State == "PanchMahals"
+replace District_Identifier = 1 if District_of_State == "Surat" || District_of_State == "Ahmednagar" || District_of_State == "KhandeshEast" || District_of_State == "KhandeshWest"
+replace District_Identifier = 1 if District_of_State == "Nasik" || District_of_State == "Poona" || District_of_State == "Satara" || District_of_State == "Sholapur"
+replace District_Identifier = 1 if District_of_State == "Bakarganj" || District_of_State == "Belgaum" || District_of_State == "Bijapur" 
+replace District_Identifier = 1 if District_of_State == "Dharwar" || District_of_State == "Kanara" || District_of_State == "Kolaba" 
+replace District_Identifier = 1 if District_of_State == "Ratnagiri" || District_of_State == "Larkana" || District_of_State == "Nawabshah" 
+replace District_Identifier = 1 if District_of_State == "Sukkur" || District_of_State == "Thar and Parkar" || District_of_State == "Upper Sind Frontier"
+/* Tharparker misspelled as 'Thar and Parker'*/ 
+replace District_Identifier = 1 if District_of_State == "Saugor" || District_of_State == "Damoh" || District_of_State == "Jubbulpore" || District_of_State == "Mandla"
+replace District_Identifier = 1 if District_of_State == "Seoni" || District_of_State == "Narsinghpur" || District_of_State == "Hoshangabad" || District_of_State == "Nimar"
+replace District_Identifier = 1 if District_of_State == "Betul" || District_of_State == "Chhindwara" || District_of_State == "Wardha" || District_of_State == "Nagpur"
+replace District_Identifier = 1 if District_of_State == "Chanda" || District_of_State == "Bhandara" || District_of_State == "Balagarh" || District_of_State == "Raipur"
+replace District_Identifier = 1 if District_of_State == "Bilaspur" || District_of_State == "Berar" || District_of_State == "Amraoti" || District_of_State == "Akola"
+replace District_Identifier = 1 if District_of_State == "Buldana" || District_of_State == "Yeotmal" || District_of_State == "Jubbulpore" || District_of_State == "Mandla"
+
+/* Dropping duplicates rows */
+duplicates list
+duplicates drop 
+/* There are more duplicates in District_of_State however population values are different */
 
 save "1931_agriculture_clean.dta", replace
 
